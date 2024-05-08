@@ -22,12 +22,14 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String) -> JsValue {
         Ok(value) => value,
         Err(err) => {
             let obj = Object::new();
+            let errs = Array::new();
             Reflect::set(
-                &obj,
-                &"errors".into(),
+                &errs,
+                &0.into(),
                 &JsValue::from_serde(&err.to_string()).unwrap(),
             )
             .unwrap();
+            Reflect::set(&obj, &"errors".into(), &errs).unwrap();
             return obj.into();
         }
     };
@@ -36,12 +38,14 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String) -> JsValue {
         Ok(selection) => selection,
         Err(err) => {
             let obj = Object::new();
+            let errs = Array::new();
             Reflect::set(
-                &obj,
-                &"errors".into(),
+                &errs,
+                &0.into(),
                 &JsValue::from_serde(&err.to_string()).unwrap(),
             )
             .unwrap();
+            Reflect::set(&obj, &"errors".into(), &errs).unwrap();
             return obj.into();
         }
     };
