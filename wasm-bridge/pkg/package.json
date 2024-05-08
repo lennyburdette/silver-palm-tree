@@ -1,0 +1,17 @@
+{
+  "name": "wasm-bridge",
+  "collaborators": [
+    "Lenny Burdette <lenny@apollographql.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_bridge_bg.wasm",
+    "wasm_bridge.js",
+    "wasm_bridge.d.ts"
+  ],
+  "module": "wasm_bridge.js",
+  "types": "wasm_bridge.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

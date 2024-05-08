@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "workspaces": [
+    "app",
+    "wasm-bridge/pkg"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=app"
+  }
+}
