@@ -5,6 +5,7 @@
   import { createModel, initMonaco, monaco } from "$lib";
   import type { editor } from "monaco-editor";
   import { examples } from "$lib/examples";
+  import { auto } from "$lib/auto";
 
   let selectedExample = examples[0];
   let selection = selectedExample.selection;
@@ -53,23 +54,32 @@
 <div class="wrapper">
   <div
     style="grid-area: header"
-    class="h-12 p-3 bg-slate-700 text-white flex justify-between"
+    class="h-12 px-3 bg-slate-700 text-white flex justify-between items-center"
   >
     <h1>JSONSelection Playground</h1>
-    <select
-      class="bg-slate-700 text-white"
-      bind:value={selectedExample}
-      on:change={() => {
-        selection = selectedExample.selection;
-        response = selectedExample.response;
-        selectionModel?.setValue(selection);
-        responseModel?.setValue(response);
-      }}
-    >
-      {#each examples as example}
-        <option value={example}>{example.title}</option>
-      {/each}
-    </select>
+    <div class="space-x-2">
+      <button
+        class="text-sm border border-slate-300 rounded px-2 py-1 hover:bg-slate-600 hover:border-slate-200"
+        on:click={() => {
+          selection = auto(response);
+          selectionModel?.setValue(selection);
+        }}>Generate Selection</button
+      >
+      <select
+        class="bg-slate-700 text-white text-sm border border-slate-300 rounded px-2 py-1"
+        bind:value={selectedExample}
+        on:change={() => {
+          selection = selectedExample.selection;
+          response = selectedExample.response;
+          selectionModel?.setValue(selection);
+          responseModel?.setValue(response);
+        }}
+      >
+        {#each examples as example}
+          <option value={example}>{example.title}</option>
+        {/each}
+      </select>
+    </div>
   </div>
   {#if hasMonaco}
     <div
