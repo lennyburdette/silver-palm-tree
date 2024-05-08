@@ -268,7 +268,7 @@
       hasMonaco = true;
 
       selectionModel = createModel(selection);
-      responseModel = createModel(response);
+      responseModel = createModel(response, "json");
 
       selectionModel.onDidChangeContent(() => {
         selection = selectionModel?.getValue() || "";
@@ -300,7 +300,8 @@
   {/if}
 
   <div style="grid-area: result" class="border-t border-gray-200">
-    <pre class="bg-white w-full h-full p-3 overflow-auto">{JSON.stringify(
+    <pre
+      class="bg-white w-full h-full p-3 overflow-auto text-xs">{JSON.stringify(
         result,
         null,
         2
@@ -308,7 +309,7 @@
   </div>
   <div style="grid-area: errors" class="border-t border-gray-200">
     {#each errors as error}
-      <div class="bg-red-100 text-red-800 p-3">{error}</div>
+      <div class="bg-red-100 text-red-800 p-3 text-sm mb-0.5">{error}</div>
     {/each}
   </div>
 </div>
