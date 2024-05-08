@@ -261,6 +261,7 @@
 
   let selectionModel: editor.ITextModel | undefined;
   let responseModel: editor.ITextModel | undefined;
+  let resultModel: editor.ITextModel | undefined;
 
   let hasMonaco = false;
   onMount(() =>
@@ -269,6 +270,7 @@
 
       selectionModel = createModel(selection);
       responseModel = createModel(response, "json");
+      resultModel = createModel(JSON.stringify(result, null, 2), "json");
 
       selectionModel.onDidChangeContent(() => {
         selection = selectionModel?.getValue() || "";
@@ -278,6 +280,8 @@
       });
     })
   );
+
+  $: resultModel?.setValue(JSON.stringify(result, null, 2));
 </script>
 
 <div class="wrapper">
@@ -294,19 +298,22 @@
       style="grid-area: response"
       use:monaco={{ model: responseModel, minimap: { enabled: false } }}
     ></div>
+
+    <div
+      style="grid-area: result"
+      class="border-t border-gray-200"
+      use:monaco={{
+        model: resultModel,
+        minimap: { enabled: false },
+        readOnly: true,
+      }}
+    ></div>
   {:else}
     <div style="grid-area: selection"></div>
     <div style="grid-area: response"></div>
+    <div style="grid-area: result"></div>
   {/if}
 
-  <div style="grid-area: result" class="border-t border-gray-200">
-    <pre
-      class="bg-white w-full h-full p-3 overflow-auto text-xs">{JSON.stringify(
-        result,
-        null,
-        2
-      )}</pre>
-  </div>
   <div style="grid-area: errors" class="border-t border-gray-200">
     {#each errors as error}
       <div class="bg-red-100 text-red-800 p-3 text-sm mb-0.5">{error}</div>
