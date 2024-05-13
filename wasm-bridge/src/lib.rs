@@ -4,7 +4,7 @@ use gloo_utils::format::JsValueSerdeExt;
 use js_sys::{Array, Object, Reflect};
 use wasm_bindgen::prelude::*;
 
-use apollo_federation::sources::connect::{ApplyTo, Selection};
+use apollo_federation::sources::connect::{ApplyTo, JSONSelection};
 
 #[wasm_bindgen]
 extern "C" {
@@ -34,7 +34,7 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String) -> JsValue {
         }
     };
 
-    let selection = match Selection::parse(selection) {
+    let selection = match JSONSelection::parse(selection) {
         Ok(selection) => selection,
         Err(err) => {
             let obj = Object::new();
