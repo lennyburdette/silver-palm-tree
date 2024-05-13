@@ -593,4 +593,21 @@ repository: .repository.full_name
       2
     ),
   },
+  {
+    title: "Foreign keys",
+    selection: `.me {
+  name
+  friends: friend_ids { id: $ }
+}`,
+    response: JSON.stringify(
+      {
+        me: {
+          name: "Alice",
+          friend_ids: [1, 2, 3],
+        },
+      },
+      null,
+      2
+    ),
+  },
 ];
