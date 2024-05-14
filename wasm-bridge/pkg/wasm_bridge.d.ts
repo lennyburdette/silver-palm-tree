@@ -6,16 +6,17 @@ export function greet(): void;
 /**
 * @param {string} selection
 * @param {string} value
+* @param {string} vars
 * @returns {any}
 */
-export function parse_selection_and_apply_to(selection: string, value: string): any;
+export function parse_selection_and_apply_to(selection: string, value: string, vars: string): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly greet: () => void;
-  readonly parse_selection_and_apply_to: (a: number, b: number, c: number, d: number) => number;
+  readonly parse_selection_and_apply_to: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_exn_store: (a: number) => void;

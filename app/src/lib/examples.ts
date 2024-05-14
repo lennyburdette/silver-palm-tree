@@ -245,6 +245,7 @@ address {
       null,
       2
     ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
     title: "Rest",
@@ -260,6 +261,7 @@ address {
       null,
       2
     ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
     title: "Github Issues",
@@ -592,6 +594,7 @@ repository: .repository.full_name
       null,
       2
     ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
     title: "Foreign keys",
@@ -606,6 +609,20 @@ repository: .repository.full_name
           friend_ids: [1, 2, 3],
         },
       },
+      null,
+      2
+    ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
+  },
+  {
+    title: "Body",
+    selection: `$args.input {
+  title
+  body
+}`,
+    response: "{}",
+    vars: JSON.stringify(
+      { $args: { input: { title: "Hello", body: "World" } }, $this: {} },
       null,
       2
     ),

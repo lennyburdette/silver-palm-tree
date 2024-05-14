@@ -20,6 +20,15 @@ function takeObject(idx) {
     return ret;
 }
 
+function addHeapObject(obj) {
+    if (heap_next === heap.length) heap.push(heap.length + 1);
+    const idx = heap_next;
+    heap_next = heap[idx];
+
+    heap[idx] = obj;
+    return idx;
+}
+
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
@@ -36,15 +45,6 @@ function getUint8Memory0() {
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
-}
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
 }
 
 function debugString(val) {
@@ -185,14 +185,17 @@ export function greet() {
 /**
 * @param {string} selection
 * @param {string} value
+* @param {string} vars
 * @returns {any}
 */
-export function parse_selection_and_apply_to(selection, value) {
+export function parse_selection_and_apply_to(selection, value, vars) {
     const ptr0 = passStringToWasm0(selection, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ptr1 = passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.parse_selection_and_apply_to(ptr0, len0, ptr1, len1);
+    const ptr2 = passStringToWasm0(vars, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len2 = WASM_VECTOR_LEN;
+    const ret = wasm.parse_selection_and_apply_to(ptr0, len0, ptr1, len1, ptr2, len2);
     return takeObject(ret);
 }
 
@@ -244,12 +247,12 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_alert_fbacc80e633daf24 = function(arg0, arg1) {
         alert(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
-        const ret = getStringFromWasm0(arg0, arg1);
-        return addHeapObject(ret);
-    };
     imports.wbg.__wbindgen_number_new = function(arg0) {
         const ret = arg0;
+        return addHeapObject(ret);
+    };
+    imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
+        const ret = getStringFromWasm0(arg0, arg1);
         return addHeapObject(ret);
     };
     imports.wbg.__wbg_new_16b304a2cfa7ff4a = function() {

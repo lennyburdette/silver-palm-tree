@@ -10,6 +10,7 @@
   let selectedExample = examples[0];
   let selection = selectedExample.selection;
   let response = selectedExample.response;
+  let vars = selectedExample.vars;
 
   let initted = false;
   onMount(() => init().then(() => (initted = true)));
@@ -17,7 +18,7 @@
   let result = {};
   let errors: string[] = [];
   $: if (browser && initted) {
-    let out = parse_selection_and_apply_to(selection, response);
+    let out = parse_selection_and_apply_to(selection, response, vars);
     if (out.errors) {
       errors = out.errors;
     }
@@ -28,6 +29,7 @@
 
   let selectionModel: editor.ITextModel | undefined;
   let responseModel: editor.ITextModel | undefined;
+  let varsModel: editor.ITextModel | undefined;
   let resultModel: editor.ITextModel | undefined;
 
   let hasMonaco = false;
@@ -38,12 +40,16 @@
       selectionModel = createModel(selection);
       responseModel = createModel(response, "json");
       resultModel = createModel(JSON.stringify(result, null, 2), "json");
+      varsModel = createModel(vars, "json");
 
       selectionModel.onDidChangeContent(() => {
         selection = selectionModel?.getValue() || "";
       });
       responseModel.onDidChangeContent(() => {
         response = responseModel?.getValue() || "";
+      });
+      varsModel.onDidChangeContent(() => {
+        vars = varsModel?.getValue() || "";
       });
     })
   );
@@ -69,10 +75,9 @@
         class="bg-slate-700 text-white text-sm border border-slate-300 rounded px-2 py-1"
         bind:value={selectedExample}
         on:change={() => {
-          selection = selectedExample.selection;
-          response = selectedExample.response;
-          selectionModel?.setValue(selection);
-          responseModel?.setValue(response);
+          selectionModel?.setValue(selectedExample.selection);
+          responseModel?.setValue(selectedExample.response);
+          varsModel?.setValue(selectedExample.vars);
         }}
       >
         {#each examples as example}
@@ -82,35 +87,58 @@
     </div>
   </div>
   {#if hasMonaco}
-    <div
-      style="grid-area: selection"
-      use:monaco={{ model: selectionModel, minimap: { enabled: false } }}
-    ></div>
+    <div class="with-title" style="grid-area: selection">
+      <h2>Selection</h2>
+      <div
+        use:monaco={{ model: selectionModel, minimap: { enabled: false } }}
+      ></div>
+    </div>
 
     <div
+      class="with-title border-l border-gray-200"
       style="grid-area: response"
-      use:monaco={{ model: responseModel, minimap: { enabled: false } }}
-    ></div>
+    >
+      <h2>JSON Response</h2>
+      <div
+        use:monaco={{ model: responseModel, minimap: { enabled: false } }}
+      ></div>
+    </div>
 
-    <div
-      style="grid-area: result"
-      class="border-t border-gray-200"
-      use:monaco={{
-        model: resultModel,
-        minimap: { enabled: false },
-        readOnly: true,
-      }}
-    ></div>
+    <div class="with-title border-l border-gray-200" style="grid-area: vars">
+      <h2>Variables</h2>
+      <div
+        class="border-t border-gray-200"
+        use:monaco={{ model: varsModel, minimap: { enabled: false } }}
+      ></div>
+    </div>
+
+    <div class="with-title border-t border-gray-200" style="grid-area: result">
+      <h2>Result</h2>
+      <div
+        use:monaco={{
+          model: resultModel,
+          minimap: { enabled: false },
+          readOnly: true,
+        }}
+      ></div>
+    </div>
   {:else}
     <div style="grid-area: selection"></div>
     <div style="grid-area: response"></div>
+    <div style="grid-area: vars"></div>
     <div style="grid-area: result"></div>
   {/if}
 
-  <div style="grid-area: errors" class="border-t border-gray-200">
-    {#each errors as error}
-      <div class="bg-red-100 text-red-800 p-3 text-sm mb-0.5">{error}</div>
-    {/each}
+  <div
+    class="with-title border-t border-l border-gray-200"
+    style="grid-area: errors"
+  >
+    <h2>Errors</h2>
+    <div>
+      {#each errors as error}
+        <div class="bg-red-100 text-red-800 p-3 text-sm mb-0.5">{error}</div>
+      {/each}
+    </div>
   </div>
 </div>
 
@@ -120,10 +148,24 @@
     display: grid;
     grid-template-areas:
       "header header"
-      "selection response"
-      "result errors";
+      "selection result"
+      "selection result"
+      "response result"
+      "response result"
+      "vars errors"
+      "vars errors";
 
-    grid-template-rows: 50px calc(50% - 25px) calc(50% - 25px);
+    grid-template-rows: 50px 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .with-title {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 30px 1fr;
+  }
+
+  .with-title h2 {
+    @apply flex items-center px-2 uppercase text-xs tracking-widest font-semibold text-slate-500 border-b bg-slate-100;
   }
 </style>
