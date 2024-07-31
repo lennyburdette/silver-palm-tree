@@ -1,7 +1,10 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
-  import init, { parse_selection_and_apply_to } from "wasm-bridge";
+  import init, {
+    // parse_selection,
+    parse_selection_and_apply_to,
+  } from "wasm-bridge";
   import { createModel, initMonaco, monaco } from "$lib";
   import type { editor } from "monaco-editor";
   import { examples } from "$lib/examples";
@@ -17,8 +20,11 @@
 
   let result = {};
   let errors: string[] = [];
+  let ast: {};
   $: if (browser && initted) {
     let out = parse_selection_and_apply_to(selection, response, vars);
+    // ast = parse_selection(selection);
+    // astModel?.setValue(JSON.stringify(ast, null, 2));
     if (out.errors) {
       errors = out.errors;
     }
@@ -31,6 +37,7 @@
   let responseModel: editor.ITextModel | undefined;
   let varsModel: editor.ITextModel | undefined;
   let resultModel: editor.ITextModel | undefined;
+  let astModel: editor.ITextModel | undefined;
 
   let hasMonaco = false;
   onMount(() =>
@@ -41,6 +48,7 @@
       responseModel = createModel(response, "json");
       resultModel = createModel(JSON.stringify(result, null, 2), "json");
       varsModel = createModel(vars, "json");
+      // astModel = createModel(JSON.stringify(ast, null, 2), "json");
 
       selectionModel.onDidChangeContent(() => {
         selection = selectionModel?.getValue() || "";
@@ -111,6 +119,17 @@
         use:monaco={{ model: varsModel, minimap: { enabled: false } }}
       ></div>
     </div>
+
+    <!-- <div class="with-title border-t border-gray-200" style="grid-area: ast">
+      <h2>AST</h2>
+      <div
+        use:monaco={{
+          model: astModel,
+          minimap: { enabled: false },
+          readOnly: true,
+        }}
+      ></div>
+    </div> -->
 
     <div class="with-title border-t border-gray-200" style="grid-area: result">
       <h2>Result</h2>

@@ -1,9 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-*/
-export function greet(): void;
-/**
 * @param {string} selection
 * @param {string} value
 * @param {string} vars
@@ -15,7 +12,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly greet: () => void;
   readonly parse_selection_and_apply_to: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
