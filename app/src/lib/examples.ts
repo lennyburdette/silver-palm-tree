@@ -627,4 +627,88 @@ repository: .repository.full_name
       2
     ),
   },
+  {
+    title: "Methods",
+    selection: `# The ->echo method returns its first input argument as-is, ignoring
+# the input data. Useful for embedding literal values, as in
+# $->echo("give me this string"), or wrapping the input value.
+__typename: $->echo("Book")
+wrapped: field->echo({ fieldValue: @ })
+
+# Returns the type of the data as a string, e.g. "object", "array",
+# "string", "number", "boolean", or "null". Note that \`typeof null\` is
+# "object" in JavaScript but "null" for our purposes.
+typeOfValue: value->typeof
+
+# When invoked against an array, ->map evaluates its first argument
+# against each element of the array, binding the element values to \`@\`,
+# and returns an array of the results. When invoked against a non-array,
+# ->map evaluates its first argument against that value and returns the
+# result without wrapping it in an array.
+doubled: numbers->map(@->mul(2))
+types: values->map(@->typeof)
+
+# Returns true if the data is deeply equal to the first argument, false
+# otherwise. Equality is solely value-based (all JSON), no references.
+isObject: value->typeof->eq("object")
+
+# Takes any number of pairs [candidate, value], and returns value for
+# the first candidate that equals the input data. If none of the
+# pairs match, a runtime error is reported, but a single-element
+# [<default>] array as the final argument guarantees a default value.
+__typename: kind->match(
+    ["dog", "Canine"],
+    ["cat", "Feline"],
+    ["Exotic"]
+)
+
+# Like ->match, but expects the first element of each pair to evaluate
+# to a boolean, returning the second element of the first pair whose
+# first element is true. This makes providing a final catch-all case
+# easy, since the last pair can be [true, <default>].
+__typename: kind->matchIf(
+    [@->eq("dog"), "Canine"],
+    [@->eq("cat"), "Feline"],
+    [true, "Exotic"]
+)
+
+# Arithmetic methods, supporting both integers and floating point values,
+# similar to JavaScript.
+sum: $.a->add($.b)->add($.c)
+difference: $.a->sub($.b)->sub($.c)
+product: $.a->mul($.b, $.c)
+quotient: $.a->div($.b)
+remainder: $.a->mod($.b)
+
+# Array methods
+first: list->first
+last: list->last
+slice: list->slice(0, 5)
+
+# Logical methods
+negation: $.condition->not
+bangBang: $.condition->not->not
+disjunction: $.a->or($.b)->or($.c)
+conjunction: $.a->and($.b, $.c)
+aImpliesB: $.a->not->or($.b)
+excludedMiddle: $.toBe->or($.toBe->not)->eq(true)`,
+    response: JSON.stringify(
+      {
+        field: "field",
+        value: {},
+        numbers: [1, 2, 3],
+        values: [1, "string", true, null, {}],
+        kind: "dog",
+        a: 1,
+        b: 2,
+        c: 3,
+        list: [1, 2, 3, 4, 5, 6, 7, 8],
+        condition: true,
+        toBe: false,
+      },
+      null,
+      2
+    ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
+  },
 ];
