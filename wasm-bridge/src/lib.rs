@@ -190,6 +190,7 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String, vars: String
     };
 
     let vars: IndexMap<_, _> = match serde_json_bytes::Value::from_bytes(vars.into()) {
+        // let vars: IndexMap<_, _> = match serde_json_bytes::Value::from_bytes(vars.into()) {
         Ok(value) => value
             .as_object()
             .map(|obj| {
@@ -212,7 +213,7 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String, vars: String
         }
     };
 
-    let vars = vars.iter().map(|(k, v)| (k.clone(), v)).collect();
+    // let vars = vars.iter().map(|(k, v)| (k.clone(), v)).collect();
 
     let selection = match JSONSelection::parse(selection) {
         Ok(selection) => selection,
