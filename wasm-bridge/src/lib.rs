@@ -25,7 +25,6 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String, vars: String
     };
 
     let vars: IndexMap<_, _> = match serde_json_bytes::Value::from_bytes(vars.into()) {
-        // let vars: IndexMap<_, _> = match serde_json_bytes::Value::from_bytes(vars.into()) {
         Ok(value) => value
             .as_object()
             .map(|obj| {
@@ -74,7 +73,7 @@ pub fn parse_selection_and_apply_to(selection: &str, value: String, vars: String
         Reflect::set(
             &errs,
             &i.into(),
-            &JsValue::from_serde(err.message().unwrap_or("unknown error")).unwrap(),
+            &JsValue::from_serde(err.message()).unwrap(),
         )
         .unwrap();
     }
