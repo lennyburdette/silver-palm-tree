@@ -11,7 +11,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["console_error_panic_hook"]
 
 [dependencies]
-apollo-compiler = "=1.0.0-beta.23"
+apollo-compiler = "=1.0.0-beta.24"
 wasm-bindgen = "0.2.84"
 # apollo-federation = { git = "https://github.com/apollographql/router", branch = "connectors" }
 apollo-federation = { path = "/Users/lenny/Development/apollographql/router/apollo-federation" }
