@@ -1,9 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
-  import init, {
-    parse_selection_and_apply_to,
-  } from "apollo-json-selection-playground-wasm";
+  import init, { parse_selection_and_apply_to } from "wasm-bridge";
   import { createModel, initMonaco, monaco } from "$lib";
   import type { editor } from "monaco-editor";
   import { examples } from "$lib/examples";
