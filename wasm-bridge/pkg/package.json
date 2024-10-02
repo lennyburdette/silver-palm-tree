@@ -1,16 +1,16 @@
 {
-  "name": "apollo-json-selection-playground-wasm",
+  "name": "wasm-bridge",
   "collaborators": [
     "Lenny Burdette <lenny@apollographql.com>"
   ],
   "version": "0.1.0",
   "files": [
-    "apollo_json_selection_playground_wasm_bg.wasm",
-    "apollo_json_selection_playground_wasm.js",
-    "apollo_json_selection_playground_wasm.d.ts"
+    "wasm_bridge_bg.wasm",
+    "wasm_bridge.js",
+    "wasm_bridge.d.ts"
   ],
-  "module": "apollo_json_selection_playground_wasm.js",
-  "types": "apollo_json_selection_playground_wasm.d.ts",
+  "module": "wasm_bridge.js",
+  "types": "wasm_bridge.d.ts",
   "sideEffects": [
     "./snippets/*"
   ]
