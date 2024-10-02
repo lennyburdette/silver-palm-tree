@@ -1,5 +1,6 @@
 export const examples = [
   {
+    id: "basic",
     title: "Basic",
     selection: `id
 name
@@ -248,7 +249,8 @@ address {
     vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
-    title: "Rest",
+    id: "rest",
+    title: "rest: *",
     selection: `a b rest: *`,
     response: JSON.stringify(
       {
@@ -264,6 +266,7 @@ address {
     vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
+    id: "github",
     title: "Github Issues",
     selection: `id
 title
@@ -272,7 +275,7 @@ state
 user {
   login
 }
-repository: .repository.full_name
+repository: repository.full_name
     `,
     response: JSON.stringify(
       [
@@ -597,8 +600,9 @@ repository: .repository.full_name
     vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
+    id: "foreign-keys",
     title: "Foreign keys",
-    selection: `.me {
+    selection: `$.me {
   name
   friends: friend_ids { id: $ }
 }`,
@@ -615,6 +619,7 @@ repository: .repository.full_name
     vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
   },
   {
+    id: "body",
     title: "Body",
     selection: `$args.input {
   title
@@ -628,6 +633,24 @@ repository: .repository.full_name
     ),
   },
   {
+    id: "literal",
+    title: "Literal values",
+    selection: `hello: $("world")
+theAnswer: $(42)
+isTrue: $(true)
+anObject: $({ key: "value", message: $.hello })
+aList: $([1, 2, 3])`,
+    response: JSON.stringify(
+      {
+        hello: "world",
+      },
+      null,
+      2
+    ),
+    vars: JSON.stringify({ $args: {}, $this: {} }, null, 2),
+  },
+  {
+    id: "methods",
     title: "Methods",
     selection: `greeting: $->echo("Hello, World!")
 colorObjects: colors->map({ name: @ })

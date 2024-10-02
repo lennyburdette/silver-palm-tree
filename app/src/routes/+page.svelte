@@ -1,30 +1,38 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
-  import init, {
-    // parse_selection,
-    parse_selection_and_apply_to,
-  } from "wasm-bridge";
+  import init, { parse_selection_and_apply_to } from "wasm-bridge";
   import { createModel, initMonaco, monaco } from "$lib";
   import type { editor } from "monaco-editor";
   import { examples } from "$lib/examples";
   import { auto } from "$lib/auto";
 
-  let selectedExample = examples[0];
-  let selection = selectedExample.selection;
-  let response = selectedExample.response;
-  let vars = selectedExample.vars;
+  function loadInitialExample() {
+    const exampleId = window.location.hash.substring(1);
+    const example = examples.find((ex) => ex.id === exampleId);
+    return example ?? examples[0];
+  }
+
+  let selectedExample: (typeof examples)[0] | null = null;
+  let selection = "";
+  let response = "";
+  let vars = "";
 
   let initted = false;
   onMount(() => init().then(() => (initted = true)));
 
   let result = {};
   let errors: string[] = [];
-  let ast: {};
   $: if (browser && initted) {
+    console.log(selection);
+    if (!selectedExample) {
+      selectedExample = selectedExample ?? loadInitialExample();
+      selection = selectedExample.selection;
+      response = selectedExample.response;
+      vars = selectedExample.vars;
+    }
+
     let out = parse_selection_and_apply_to(selection, response, vars);
-    // ast = parse_selection(selection);
-    // astModel?.setValue(JSON.stringify(ast, null, 2));
     if (out.errors) {
       errors = out.errors;
     }
@@ -37,7 +45,6 @@
   let responseModel: editor.ITextModel | undefined;
   let varsModel: editor.ITextModel | undefined;
   let resultModel: editor.ITextModel | undefined;
-  let astModel: editor.ITextModel | undefined;
 
   let hasMonaco = false;
   onMount(() =>
@@ -48,7 +55,6 @@
       responseModel = createModel(response, "json");
       resultModel = createModel(JSON.stringify(result, null, 2), "json");
       varsModel = createModel(vars, "json");
-      // astModel = createModel(JSON.stringify(ast, null, 2), "json");
 
       selectionModel.onDidChangeContent(() => {
         selection = selectionModel?.getValue() || "";
@@ -63,6 +69,34 @@
   );
 
   $: resultModel?.setValue(JSON.stringify(result, null, 2));
+
+  import { afterUpdate } from "svelte";
+
+  afterUpdate(() => {
+    const handleHashChange = () => {
+      const exampleId = window.location.hash.substring(1);
+      const example = examples.find((ex) => ex.id === exampleId);
+      if (example) {
+        selectedExample = example;
+        selectExample(example);
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  });
+
+  function selectExample(example: (typeof examples)[0]) {
+    if (example) {
+      window.location.hash = example.id;
+      selectionModel?.setValue(example.selection);
+      responseModel?.setValue(example.response);
+      varsModel?.setValue(example.vars);
+    }
+  }
 </script>
 
 <div class="wrapper">
@@ -81,15 +115,11 @@
       >
       <select
         class="bg-slate-700 text-white text-sm border border-slate-300 rounded px-2 py-1"
-        bind:value={selectedExample}
-        on:change={() => {
-          selectionModel?.setValue(selectedExample.selection);
-          responseModel?.setValue(selectedExample.response);
-          varsModel?.setValue(selectedExample.vars);
-        }}
+        on:change={(e) =>
+          selectExample(examples[parseInt(e.currentTarget.value)])}
       >
-        {#each examples as example}
-          <option value={example}>{example.title}</option>
+        {#each examples as example, i}
+          <option value={i}>{example.title}</option>
         {/each}
       </select>
     </div>
@@ -119,17 +149,6 @@
         use:monaco={{ model: varsModel, minimap: { enabled: false } }}
       ></div>
     </div>
-
-    <!-- <div class="with-title border-t border-gray-200" style="grid-area: ast">
-      <h2>AST</h2>
-      <div
-        use:monaco={{
-          model: astModel,
-          minimap: { enabled: false },
-          readOnly: true,
-        }}
-      ></div>
-    </div> -->
 
     <div class="with-title border-t border-gray-200" style="grid-area: result">
       <h2>Result</h2>

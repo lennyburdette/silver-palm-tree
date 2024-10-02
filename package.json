@@ -5,6 +5,7 @@
     "wasm-bridge/pkg"
   ],
   "scripts": {
+    "wasm": "cd wasm-bridge && wasm-pack build --target web",
     "build": "npm run build --workspace=app"
   }
 }
