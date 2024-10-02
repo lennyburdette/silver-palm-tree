@@ -655,9 +655,9 @@ aList: $([1, 2, 3])`,
     selection: `greeting: $->echo("Hello, World!")
 colorObjects: colors->map({ name: @ })
 status: status->match(
-    ["active", "ACTIVE"],
-    ["not active", "INACTIVE"],
-    [@, @]
+  ["active", "ACTIVE"],
+  ["not active", "INACTIVE"],
+  [@, @]
 )
 firstColor: colors->first
 lastColor: colors->last

@@ -104,7 +104,7 @@
     style="grid-area: header"
     class="h-12 px-3 bg-slate-700 text-white flex justify-between items-center"
   >
-    <h1>JSONSelection Playground</h1>
+    <h1><em>Unofficial</em> Apollo Connectors Mapping Playground</h1>
     <div class="space-x-2">
       <button
         class="text-sm border border-slate-300 rounded px-2 py-1 hover:bg-slate-600 hover:border-slate-200"
